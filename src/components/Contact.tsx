@@ -130,18 +130,21 @@ export default function Contact() {
               </button>
             </div>
 
-            <div className="mt-6 flex items-center gap-3 border-t border-edge/60 pt-6">
+            {/* A single row can't hold 4 cards in the narrow desktop column —
+                the last one was pushed past the edge. 2×2 fits, and on small
+                phones a single column keeps the handles fully readable. */}
+            <div className="mt-6 grid grid-cols-1 gap-3 border-t border-edge/60 pt-6 sm:grid-cols-2">
               {socials.map(({ icon: Icon, label, href, handle }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex flex-1 items-center gap-3 rounded-xl border border-edge/60 bg-surface/50 p-3 transition-all hover:border-accent/40 hover:text-accent"
+                  className="group flex min-w-0 items-center gap-3 rounded-xl border border-edge/60 bg-surface/50 p-3 transition-all hover:border-accent/40 hover:text-accent"
                 >
-                  <Icon className="h-4 w-4 text-muted transition-colors group-hover:text-accent" />
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-foreground">{label}</p>
+                  <Icon className="h-4 w-4 shrink-0 text-muted transition-colors group-hover:text-accent" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-semibold text-foreground">{label}</p>
                     <p className="truncate font-mono text-[10px] text-muted">{handle}</p>
                   </div>
                 </a>
