@@ -1,0 +1,71 @@
+# Netlify configuration — caching, security headers, SPA fallback
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback so unknown paths render the app instead of a hard 404
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Canonical host redirect: force https + apex domain
+[[redirects]]
+  from = "http://hamza-khan-lodhi.netlify.app/*"
+  to = "https://hamza-khan-lodhi.netlify.app/:splat"
+  status = 301
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+    X-Robots-Tag = "index, follow, max-image-preview:large, max-snippet:-1"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# Hashed build assets are immutable — cache aggressively
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Images & icons — cache for a week
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/og-image.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+# HTML should always be fresh so SEO meta updates propagate
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"

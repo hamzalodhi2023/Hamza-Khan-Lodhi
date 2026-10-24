@@ -1,0 +1,346 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Theme: "Terminal Emerald"
+  A programmer-centric palette — deep near-black slate base with
+  terminal-green (emerald) as the primary accent and a cool cyan
+  as the secondary highlight. Light mode flips to a clean paper white.
+*/
+
+:root {
+  /* Light theme */
+  --background: 247 249 250;
+  --surface: 255 255 255;
+  --card: 255 255 255;
+  --foreground: 13 20 28;
+  --muted: 71 85 105;
+  --accent: 4 120 87;
+  --accent2: 14 116 144;
+  --border: 214 224 230;
+  color-scheme: light;
+}
+
+.dark {
+  /* Dark theme */
+  --background: 8 11 14;
+  --surface: 15 20 25;
+  --card: 17 23 29;
+  --foreground: 226 236 240;
+  --muted: 154 170 182;
+  --accent: 52 211 153;
+  --accent2: 34 211 238;
+  --border: 34 45 55;
+  color-scheme: dark;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  @apply bg-background text-foreground font-sans antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgb(var(--accent) / 0.28);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--border));
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--accent) / 0.6);
+}
+
+@layer components {
+  /* Reusable glassy container */
+  .glass {
+    @apply border border-edge/70 bg-surface/70 backdrop-blur-xl;
+  }
+
+  /* Gradient text helper */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      120deg,
+      rgb(var(--accent)) 0%,
+      rgb(var(--accent2)) 55%,
+      rgb(var(--accent)) 100%
+    );
+    background-size: 200% auto;
+  }
+  .text-gradient:hover {
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Subtle dotted grid backdrop for "code" feel */
+  .grid-bg {
+    background-image: radial-gradient(
+      rgb(var(--foreground) / 0.09) 1px,
+      transparent 1px
+    );
+    background-size: 26px 26px;
+  }
+
+  /* Section title underline */
+  .section-line {
+    @apply h-px w-full bg-gradient-to-r from-accent/60 via-edge to-transparent;
+  }
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------------- Preloader ---------------- */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  background: rgb(var(--background));
+  transition: opacity 0.6s ease, visibility 0.6s ease, transform 0.6s ease;
+}
+
+.preloader--leaving {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.03);
+}
+
+.preloader__grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgb(var(--foreground) / 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 26px 26px;
+  mask-image: radial-gradient(circle at center, #000 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at center, #000 0%, transparent 75%);
+}
+
+.preloader__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.preloader__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+  animation: preloaderPop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.preloader__bracket {
+  color: rgb(var(--accent) / 0.5);
+}
+
+.preloader__mark {
+  background-image: linear-gradient(120deg, rgb(var(--accent)), rgb(var(--accent2)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.preloader__name {
+  margin-top: 0.75rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgb(var(--foreground));
+  animation: preloaderFade 0.7s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.preloader__role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(var(--muted));
+  animation: preloaderFade 0.7s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.preloader__bar {
+  width: 220px;
+  max-width: 60vw;
+  height: 3px;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgb(var(--border));
+  animation: preloaderFade 0.7s 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.preloader__fill {
+  height: 100%;
+  border-radius: 9999px;
+  background-image: linear-gradient(
+    90deg,
+    rgb(var(--accent)),
+    rgb(var(--accent2))
+  );
+  box-shadow: 0 0 12px rgb(var(--accent) / 0.6);
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.preloader__meta {
+  display: flex;
+  width: 220px;
+  max-width: 60vw;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: rgb(var(--muted));
+  animation: preloaderFade 0.7s 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.preloader__percent {
+  color: rgb(var(--accent));
+}
+
+@keyframes preloaderPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes preloaderFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Lock scroll while the preloader is up */
+body.is-loading {
+  overflow: hidden;
+  height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader__logo,
+  .preloader__name,
+  .preloader__role,
+  .preloader__bar,
+  .preloader__meta {
+    animation: none;
+  }
+}
+
+/* ---------------- Custom cursor ----------------
+   Only active for fine pointers (mouse/trackpad). Touch devices are
+   untouched so the native tap behaviour stays intact. */
+.cursor-root {
+  position: fixed;
+  inset: 0;
+  /* Above the preloader (z-index 10000) so the cursor stays visible while loading */
+  z-index: 10001;
+  pointer-events: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 0.25s ease, width 0.25s ease, height 0.25s ease,
+    background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  background: rgb(var(--accent));
+  box-shadow: 0 0 12px rgb(var(--accent) / 0.7);
+}
+.cursor-dot[data-hover='true'] {
+  opacity: 0 !important;
+}
+
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgb(var(--accent) / 0.55);
+}
+.cursor-ring[data-hover='true'] {
+  width: 58px;
+  height: 58px;
+  border-color: rgb(var(--accent) / 0.9);
+  background: rgb(var(--accent) / 0.12);
+}
+
+/* Replace the native cursor only when ours is running */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-root {
+    display: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor-root {
+    display: none !important;
+  }
+}

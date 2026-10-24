@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block AI crawlers from training on content (optional — remove if you want to be indexed by AI search)
+# User-agent: GPTBot
+# Disallow: /
+
+Sitemap: https://hamza-khan-lodhi.netlify.app/sitemap.xml
